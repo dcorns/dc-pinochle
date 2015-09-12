@@ -6,7 +6,7 @@
  */
 'use strict';
 module.exports = {
-  deal: function(players, dealInteger){
+  startRound: function(players, dealInteger){
     if(!(players)) throw new Error('a player object is required', 'nuts.js', 10);
     if(!(players.hasOwnProperty('player1'))) throw new Error('player object requires a player1 property');
     if(!(players.hasOwnProperty('player2'))) throw new Error('player object requires a player2 property');
@@ -14,11 +14,12 @@ module.exports = {
     if(!(players.hasOwnProperty('player4'))) throw new Error('player object requires a player4 property');
     var dealInt = dealInteger || 4;
     if(dealInt > 20 || dealInt < 1) throw new Error('deal integer must be less than 20 and greater than 0', 'nuts.js', 12);
-    var deck = this.makeDeck();
+    var deck = this.shuffle();
+    //players = this.deal(deck, dealInt, players);
 return deck;
   },
-
-  makeDeck: function(){
+  shuffle: function(){
+    console.log('shuffle');
     var deck = [],
       rnd;
     while(deck.length < 80){
@@ -27,7 +28,13 @@ return deck;
         deck.push(rnd);
       }
     }
-    console.log(typeof deck);
     return deck;
+  },
+  deal: function(deck, dealInt, players){
+    var c = 0,
+      len = deck.length;
+    for(c; c < len; c++){
+
+    }
   }
 };

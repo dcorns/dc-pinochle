@@ -6,6 +6,28 @@
  */
 'use strict';
 
-var nuts = require('./nuts');
-var hands = nuts.deal({player1:{}, player2:{}, player3:{}, player4:{}});
-console.log(hands);
+var nuts = require('./nuts'),
+  players = {
+    player1: {
+      name:'',
+      hand:[],
+      dealer: true
+    },
+    player2: {
+      name:'',
+      hand:[],
+      dealer: false
+    },
+    player3: {
+      name:'',
+      hand:[],
+      dealer: false
+    },
+    player4: {
+      name:'',
+      hand:[],
+      dealer: false
+    }
+  };
+players = nuts.startRound(players, 5);
+console.log(players);
