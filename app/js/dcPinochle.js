@@ -11,22 +11,26 @@ var nuts = require('./nuts'),
     player1: {
       name:'',
       hand:[],
-      dealer: true
+      dealPos: 4,
+      meld: 0
     },
     player2: {
       name:'',
       hand:[],
-      dealer: false
+      dealPos: 1,
+      meld: 0
     },
     player3: {
       name:'',
       hand:[],
-      dealer: false
+      dealPos: 2,
+      meld: 0
     },
     player4: {
       name:'',
       hand:[],
-      dealer: false
+      dealPos: 3,
+      meld: 0
     }
   };
 players = nuts.startRound(players, 5);

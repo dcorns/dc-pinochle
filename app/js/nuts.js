@@ -15,11 +15,10 @@ module.exports = {
     var dealInt = dealInteger || 4;
     if(dealInt > 20 || dealInt < 1) throw new Error('deal integer must be less than 20 and greater than 0', 'nuts.js', 12);
     var deck = this.shuffle();
-    //players = this.deal(deck, dealInt, players);
-return deck;
+    players = this.deal(deck, dealInt, players);
+return players;
   },
   shuffle: function(){
-    console.log('shuffle');
     var deck = [],
       rnd;
     while(deck.length < 80){
@@ -32,9 +31,24 @@ return deck;
   },
   deal: function(deck, dealInt, players){
     var c = 0,
-      len = deck.length;
-    for(c; c < len; c++){
-
+      len = deck.length,
+      prop,
+      dealPos = 1,
+      cardCountDown = dealInt;
+    while(c < len){
+      for(prop in players){
+        if(players[prop].dealPos === dealPos && players.hasOwnProperty(prop)){
+          players[prop].hand.push(deck[c]);
+        }
+      }
+      cardCountDown--;
+      if(cardCountDown === 0){
+        cardCountDown = dealInt;
+        dealPos++;
+        if(dealPos === 5) dealPos = 1;
+      }
+      c++;
     }
+    return players;
   }
 };

@@ -36,25 +36,6 @@ describe('Play a round of Pinochle', function() {
       nuts.startRound({player2:{name:'Dale', hand: []}, player3:{name:'Norm', hand: []}, player4:{name:'Lisa', hand: []}});
     }).to.throw('player object requires a player1 property');
   });
-  it('selects 4 random groups of 20 cards, dealInteger cards at a time', function () {
-
-  });
-  it('adds a 20 card hand array to each player object in players object', function () {
-    //var players = {player1:{}, player2:{}, player3:{}, player4:{}};
-    //var players = nuts.startRound(players, 5);
-    //expect(players.player1.hand).true;
-    //expect(players.player2.hand).true;
-    //expect(players.player3.hand).true;
-    //expect(players.player4.hand).true;
-    //expect(Array.isArray(players.player1.hand)).true;
-    //expect(Array.isArray(players.player2.hand)).true;
-    //expect(Array.isArray(players.player3.hand)).true;
-    //expect(Array.isArray(players.player4.hand)).true;
-    //expect(players.player1.hand.length).to.be.eq(20);
-    //expect(players.player2.hand.length).to.be.eq(20);
-    //expect(players.player3.hand.length).to.be.eq(20);
-    //expect(players.player4.hand.length).to.be.eq(20);
-  });
 });
 
 describe('Shuffle-makeDeck', function(){
@@ -105,32 +86,31 @@ describe('Deal the Cards', function(){
   beforeEach(function(){
     nuts = require('../../app/js/nuts');
     deck = [1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4];
-    console.log(deck.length);
     players = {
       player1: {
         name:'',
         hand:[],
-        dealer: true
+        dealPos: 4
       },
       player2: {
         name:'',
         hand:[],
-        dealer: false
+        dealPos: 1
       },
       player3: {
         name:'',
         hand:[],
-        dealer: false
+        dealPos: 2
       },
       player4: {
         name:'',
         hand:[],
-        dealer: false
+        dealPos: 3
       }
     };
     players = nuts.deal(deck, 5, players);
   });
-  it('deals first to the player number that follows the dealers player number', function(){
+  it('deals to player with dealPos = 1 first', function(){
     expect(players.player2.hand[0]).to.be.eq(1);
   });
   it('deals each player 20 cards', function(){
@@ -141,24 +121,56 @@ describe('Deal the Cards', function(){
   });
   it('deals dealInt cards at a time', function(){
     expect(function(){
-      players.player1.hand.reduce(function(p, c){
+      return players.player1.hand.reduce(function(p, c){
         return p === c ? c: c + p;
       }, 4);
-    }).to.be.eq(4);
+    }()).to.be.eq(4);
     expect(function(){
-      players.player2.hand.reduce(function(p, c){
+      return players.player2.hand.reduce(function(p, c){
         return p === c ? c: c + p;
       }, 1);
-    }).to.be.eq(1);
+    }()).to.be.eq(1);
     expect(function(){
-      players.player3.hand.reduce(function(p, c){
+     return players.player3.hand.reduce(function(p, c){
         return p === c ? c: c + p;
       }, 2);
-    }).to.be.eq(2);
+    }()).to.be.eq(2);
     expect(function(){
-      players.player4.hand.reduce(function(p, c){
+     return players.player4.hand.reduce(function(p, c){
         return p === c ? c: c + p;
       }, 3);
-    }).to.be.eq(3);
+    }()).to.be.eq(3);
+  });
+});
+
+describe('count the meld', function() {
+  var players;
+  beforeEach(function () {
+    players = {
+      player1: {
+        name: '',
+        hand: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+        dealPos: 4,
+        meld: 0
+      },
+      player2: {
+        name: '',
+        hand: [21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,35,37,38,39,40],
+        dealPos: 1,
+        meld: 0
+      },
+      player3: {
+        name: '',
+        hand: [41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60],
+        dealPos: 2,
+        meld: 0
+      },
+      player4: {
+        name: '',
+        hand: [61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80],
+        dealPos: 3,
+        meld: 0
+      }
+    };
   });
 });
