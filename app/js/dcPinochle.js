@@ -7,6 +7,7 @@
 'use strict';
 
 var nuts = require('./nuts'),
+  cardData = require('./cardData'),
   players = {
     player1: {
       name:'',
@@ -34,4 +35,5 @@ var nuts = require('./nuts'),
     }
   };
 players = nuts.startRound(players, 5);
-console.log(players);
+
+console.log(cardData.cardKey);
