@@ -8,20 +8,22 @@
 var expect = require('chai').expect;
 
 describe('meld points',function(){
-  var cardData;
+  var Meld;
   beforeEach(function(){
-    cardData = require('../../app/js/cardData');
+    Meld = require('../../app/js/cardData');
   });
-  it('is an object', function(){
-    expect(typeof cardData).to.be.eq('object');
+  it('Meld is a constructor function', function(){
+    expect(typeof Meld).to.be.eq('function');
   });
   it('has 4 point base for Jacks around', function(){
-    expect(cardData.jacksAround.points).to.be.eq(4);
+    var meld = new Meld([]);
+    expect(meld.jacksAround.basePoints).to.be.eq(4);
   });
   it('scores jacks around', function(){
-    var hand = [1,21,41,61],
-      meld = cardData.scoreAround(hand, 1, cardData.jacksAround.points);
-    expect(meld).to.be.eq(4);
+    var meld = new Meld([1,21,41,61]);
+    console.dir(meld);
+    meld.recordArounds(1);
+    expect(meld.jacksAround.points).to.be.eq(4);
   });
   it('scores double jacks around', function(){
     var hand = [1, 6, 21, 26, 41, 46, 61, 66],
