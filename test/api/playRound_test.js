@@ -10,7 +10,7 @@ var expect = require('chai').expect;
 describe('Play a round of Pinochle', function() {
   var nuts;
   beforeEach(function(){
-    nuts = require('../../app/js/nuts');
+    nuts = require('../../api/js/nuts');
   });
   it('requires an integer between 1 and 20 for deal rotation', function () {
     expect(function(){nuts.startRound({player1:{name:'Dale', hand: []}, player2:{name:'Norm', hand: []}, player3:{name:'Lisa', hand: []}, player4:{name:'Irma', hand: []} },-1)}).to.throw('deal integer must be less than 20 and greater than 0', 'nuts.js', 12);
@@ -42,7 +42,7 @@ describe('Shuffle-makeDeck', function(){
   var nuts;
   var deck;
   beforeEach(function(){
-    nuts = require('../../app/js/nuts');
+    nuts = require('../../api/js/nuts');
     deck = nuts.shuffle();
   });
   it('returns an array of integers from 1 to 80 in random order', function(){
@@ -84,7 +84,7 @@ describe('Deal the Cards', function(){
     players,
     nuts;
   beforeEach(function(){
-    nuts = require('../../app/js/nuts');
+    nuts = require('../../api/js/nuts');
     deck = [1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4];
     players = {
       player1: {
@@ -140,37 +140,5 @@ describe('Deal the Cards', function(){
         return p === c ? c: c + p;
       }, 3);
     }()).to.be.eq(3);
-  });
-});
-
-describe('count the meld', function() {
-  var players;
-  beforeEach(function () {
-    players = {
-      player1: {
-        name: '',
-        hand: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
-        dealPos: 4,
-        meld: 0
-      },
-      player2: {
-        name: '',
-        hand: [21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,35,37,38,39,40],
-        dealPos: 1,
-        meld: 0
-      },
-      player3: {
-        name: '',
-        hand: [41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60],
-        dealPos: 2,
-        meld: 0
-      },
-      player4: {
-        name: '',
-        hand: [61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80],
-        dealPos: 3,
-        meld: 0
-      }
-    };
   });
 });

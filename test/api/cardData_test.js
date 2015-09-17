@@ -10,7 +10,7 @@ var expect = require('chai').expect;
 describe('meld points for arounds',function() {
   var Meld;
   beforeEach(function () {
-    Meld = require('../../app/js/cardData');
+    Meld = require('../../api/js/cardData');
   });
   it('Meld is a constructor function', function () {
     expect(typeof Meld).to.be.eq('function');
@@ -115,7 +115,7 @@ describe('meld points for arounds',function() {
 describe('Other meld points', function(){
   var Meld;
   beforeEach(function(){
-    Meld = require('../../app/js/cardData');
+    Meld = require('../../api/js/cardData');
   });
   it('has 4 point base for pinochle', function(){
     var meld = new Meld([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80]);
@@ -142,18 +142,18 @@ describe('Other meld points', function(){
     meld.calculateMeld();
     expect(meld.pinochle.points).to.be.eq(500);
   });
-  it('2 point base for marriage', function(){
+  it('has 2 point base for marriage', function(){
     var meld = new Meld([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80]);
     meld.calculateMeld();
     expect(meld.marriage.basePoints).to.be.eq(2);
   });
-  //it('separates all clubs', function(){
-  //  expect(meld.clubs).to.be.eq([ 21, 26, 31, 36, 22, 27, 32, 37, 23, 28, 33, 38, 24, 29, 34, 39, 25, 30, 35, 40 ]);
-  //});
-  //it('separates all diamonds', function(){
-  //  expect(meld.diamonds).to.be.eq([ 41, 46, 51, 56, 42, 47, 52, 57, 43, 48, 53, 58, 44, 49, 54, 59, 45, 50, 55, 60 ]);
-  //});
-  //it('separates all hearts', function(){
-  //  expect(meld.hearts).to.be.eq([ 61, 66, 71, 76, 62, 67, 72, 77, 63, 68, 73, 78, 64, 64, 69, 74, 79, 65, 70, 75, 80 ]);
-  //});
+  it('scores 2 points for marriage', function(){
+    var meld = new Meld([2, 3]);
+    meld.recordMarriages();
+    expect(meld.marriage.points).to.be.eq(2);
+  });
+  it('has 15 point base for run', function(){
+    var meld = new Meld([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80]);
+    expect(meld.runn.basePoints).to.be.eq(15);
+  });
 });
