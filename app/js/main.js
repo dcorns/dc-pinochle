@@ -4,5 +4,4 @@
  * Copyright © 2015 Dale Corns
  */
 'use strict';
-require('angular/angular');
 
