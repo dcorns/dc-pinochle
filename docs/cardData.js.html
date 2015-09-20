@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: cardData.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: cardData.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * cardData
  * Created by dcorns on 9/13/15
  * @license Copyright © 2015 Dale Corns
@@ -95,7 +123,7 @@ Meld.prototype.recordArounds = function(meldObj, hand){
     diamondCount = 0,
     heartCount = 0;
   hand = hand || this.hand;
-  for(c; c < this.len; c++){
+  for(c; c &lt; this.len; c++){
     if(hand[c] === meldObj.baseInt || hand[c] === meldObj.baseInt + 5 || hand[c] === meldObj.baseInt + 10 || hand[c] === meldObj.baseInt + 15){
       spadeCount ++;
       meldObj.cards.spades.push(hand[c]);
@@ -113,13 +141,13 @@ Meld.prototype.recordArounds = function(meldObj, hand){
       meldObj.cards.hearts.push(this.hand[c]);
     }
   }
-  if(spadeCount > 0 && clubCount > 0 && diamondCount > 0 && heartCount > 0){
+  if(spadeCount > 0 &amp;&amp; clubCount > 0 &amp;&amp; diamondCount > 0 &amp;&amp; heartCount > 0){
     meldObj.points = meldObj.basePoints;
-    if(spadeCount > 1 && clubCount > 1 && diamondCount > 1 && heartCount > 1){
+    if(spadeCount > 1 &amp;&amp; clubCount > 1 &amp;&amp; diamondCount > 1 &amp;&amp; heartCount > 1){
       meldObj.points = meldObj.basePoints * 10;
-      if(spadeCount > 2 && clubCount > 2 && diamondCount > 2 && heartCount > 2){
+      if(spadeCount > 2 &amp;&amp; clubCount > 2 &amp;&amp; diamondCount > 2 &amp;&amp; heartCount > 2){
         meldObj.points = meldObj.basePoints * 10 + meldObj.basePoints;
-        if(spadeCount > 3 && clubCount > 3 && diamondCount > 3 && heartCount > 3){
+        if(spadeCount > 3 &amp;&amp; clubCount > 3 &amp;&amp; diamondCount > 3 &amp;&amp; heartCount > 3){
           meldObj.points = meldObj.basePoints * 20;
         }
       }
@@ -170,14 +198,14 @@ Meld.prototype.recordRunsAndMarriages = function(jacks, queens, kings, tens, ace
   marriages.points.hearts = result.marriagePoints; marriages.cards.hearts = result.marriageCards;
   runs.points.hearts = result.runPoints; runs.cards.hearts = result.runCards;
   //round robin check
-  if(marriages.points.spades > marriages.basePoints - 1 && marriages.points.clubs > marriages.basePoints - 1 && marriages.points.diamonds > marriages.basePoints - 1 && marriages.points.hearts > marriages.basePoints - 1){
+  if(marriages.points.spades > marriages.basePoints - 1 &amp;&amp; marriages.points.clubs > marriages.basePoints - 1 &amp;&amp; marriages.points.diamonds > marriages.basePoints - 1 &amp;&amp; marriages.points.hearts > marriages.basePoints - 1){
     roundRobin.points = roundRobin.basePoints;
     //add cards later maybe
-    if(marriages.points.spades > marriages.basePoints * 2 - 1 && marriages.points.clubs > marriages.basePoints * 2 - 1 && marriages.points.diamonds > marriages.basePoints * 2 - 1 && marriages.points.hearts > marriages.basePoints * 2 - 1){
+    if(marriages.points.spades > marriages.basePoints * 2 - 1 &amp;&amp; marriages.points.clubs > marriages.basePoints * 2 - 1 &amp;&amp; marriages.points.diamonds > marriages.basePoints * 2 - 1 &amp;&amp; marriages.points.hearts > marriages.basePoints * 2 - 1){
       roundRobin.points = roundRobin.basePoints * 2;
-      if(marriages.points.spades > marriages.basePoints * 3 - 1 && marriages.points.clubs > marriages.basePoints * 3 - 1 && marriages.points.diamonds > marriages.basePoints * 3 - 1 && marriages.points.hearts > marriages.basePoints * 3 - 1){
+      if(marriages.points.spades > marriages.basePoints * 3 - 1 &amp;&amp; marriages.points.clubs > marriages.basePoints * 3 - 1 &amp;&amp; marriages.points.diamonds > marriages.basePoints * 3 - 1 &amp;&amp; marriages.points.hearts > marriages.basePoints * 3 - 1){
         roundRobin.points = roundRobin.basePoints * 3;
-        if(marriages.points.spades === marriages.basePoints * 4 && marriages.points.clubs === marriages.basePoints * 4 && marriages.points.diamonds === marriages.basePoints * 4 && marriages.points.hearts === marriages.basePoints * 4){
+        if(marriages.points.spades === marriages.basePoints * 4 &amp;&amp; marriages.points.clubs === marriages.basePoints * 4 &amp;&amp; marriages.points.diamonds === marriages.basePoints * 4 &amp;&amp; marriages.points.hearts === marriages.basePoints * 4){
           roundRobin.points = roundRobin.basePoints * 4;
         }
       }
@@ -200,30 +228,30 @@ Meld.prototype.runAndMarriagesBySuite = function(jacks, queens, kings, tens, ace
   var runPoints = 0, mCards = [], mPoints = 0, rCards = [];
   mCards.concat(queens); mCards.concat(kings);
   rCards.concat(jacks); rCards.concat(mCards); rCards.concat(tens); rCards.concat(aces);
-  if(queens.length > 0 && kings.length > 0){
+  if(queens.length > 0 &amp;&amp; kings.length > 0){
     mPoints = marriageBasePoints;
-    if(jacks.length > 0 && tens.length > 0 && aces.length > 0){
+    if(jacks.length > 0 &amp;&amp; tens.length > 0 &amp;&amp; aces.length > 0){
       runPoints = runBasePoints;
     }
   }else return {runPoints: runPoints, marriagePoints: mPoints, runCards: rCards, marriageCards: mCards};
-  if(queens.length > 1 && kings.length > 1){
+  if(queens.length > 1 &amp;&amp; kings.length > 1){
     mPoints = marriageBasePoints * 2;
     runPoints = runPoints + marriageBasePoints * 2;
-    if(jacks.length > 1 && tens.length > 1 && aces.length > 1){
+    if(jacks.length > 1 &amp;&amp; tens.length > 1 &amp;&amp; aces.length > 1){
       runPoints = runBasePoints * 10;
     }
   }else return {runPoints: runPoints, marriagePoints: mPoints, runCards: rCards, marriageCards: mCards};
-  if(queens.length > 2 && kings.length > 2){
+  if(queens.length > 2 &amp;&amp; kings.length > 2){
     mPoints = marriageBasePoints * 3;
     runPoints = runPoints + marriageBasePoints * 2;
-    if(jacks.length > 2 && tens.length > 2 && aces.length > 2){
+    if(jacks.length > 2 &amp;&amp; tens.length > 2 &amp;&amp; aces.length > 2){
       runPoints = runBasePoints * 10 + runBasePoints;
     }
   }else return {runPoints: runPoints, marriagePoints: mPoints, runCards: rCards, marriageCards: mCards};
-  if(queens.length > 3 && kings.length > 3){
+  if(queens.length > 3 &amp;&amp; kings.length > 3){
     mPoints = marriageBasePoints * 4;
     runPoints = runPoints + marriageBasePoints * 2;
-    if(jacks.length > 3 && tens.length > 3 && aces.length > 3){
+    if(jacks.length > 3 &amp;&amp; tens.length > 3 &amp;&amp; aces.length > 3){
       runPoints = runBasePoints * 20; //and game since it would be impossible for the opposing team to score
     }
   }
@@ -237,25 +265,25 @@ Meld.prototype.runAndMarriagesBySuite = function(jacks, queens, kings, tens, ace
  */
 Meld.prototype.recordPinochles = function(jacks, queens, pinochles){
   var diamonds = [], spades = [];
-  if(jacks.length > 0 && queens.length > 0){
+  if(jacks.length > 0 &amp;&amp; queens.length > 0){
     var c = 0, len = jacks.length;
-    for(c; c < len; c++){
+    for(c; c &lt; len; c++){
       if(jacks[c] === 41 || jacks[c] === 46 || jacks[c] === 51 || jacks[c] === 56) diamonds.push(jacks[c]);
     }
     c = 0; len = queens.length;
-    for(c; c < len; c++){
+    for(c; c &lt; len; c++){
       if(queens[c] === 2 || queens[c] === 7 || queens[c] === 12 || queens[c] === 17) spades.push(queens[c]);
     }
   }
   pinochles.cards.diamonds = jacks; pinochles.cards.spades = queens;
   var dLen = diamonds.length, sLen = spades.length;
-  if(dLen > 0 && sLen > 0){
+  if(dLen > 0 &amp;&amp; sLen > 0){
     pinochles.points = 4;
-    if(dLen > 1 && sLen > 1){
+    if(dLen > 1 &amp;&amp; sLen > 1){
       pinochles.points = 30;
-      if(dLen > 2 && sLen > 2){
+      if(dLen > 2 &amp;&amp; sLen > 2){
         pinochles.points = 90;
-        if(dLen > 3 && sLen > 3){
+        if(dLen > 3 &amp;&amp; sLen > 3){
           pinochles.points = 500; //Quad nuts, Game over baby!
         }
       }
@@ -263,4 +291,26 @@ Meld.prototype.recordPinochles = function(jacks, queens, pinochles){
   }
 };
 
-module.exports = Meld;
+module.exports = Meld;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Meld.html">Meld</a></li></ul><h3>Global</h3><ul><li><a href="global.html#nuts">nuts</a></li><li><a href="global.html#players">players</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Sat Sep 19 2015 17:29:23 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
