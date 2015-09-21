@@ -13,24 +13,28 @@ var nuts = require('./nuts'),
   CardData = require('./cardData'),
   players = {
     player1: {
+      id: 1,
       name:'',
       hand:[],
       dealPos: 4,
       meld: {}
     },
     player2: {
+      id: 2,
       name:'',
       hand:[],
       dealPos: 1,
       meld: {}
     },
     player3: {
+      id: 3,
       name:'',
       hand:[],
       dealPos: 2,
       meld: {}
     },
     player4: {
+      id: 4,
       name:'',
       hand:[],
       dealPos: 3,
@@ -64,3 +68,4 @@ console.dir(players.player1);
 console.dir(players.player2);
 console.dir(players.player3);
 console.dir(players.player4);
+

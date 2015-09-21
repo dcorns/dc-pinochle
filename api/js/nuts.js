@@ -10,6 +10,17 @@
  * @type {{startRound: Function, shuffle: Function, deal: Function}}
  */
 module.exports = {
+  teamOneTricks: {
+    cards: [],
+    points: 0
+  },
+  teamTwoTricks: {
+    cards: [],
+    points: 0
+  },
+  currentCards: [],
+  playerTurn: 0,
+  trump: '',
   /**
    *
    * @param players
@@ -48,7 +59,7 @@ return players;
    * @param deck
    * @param dealInt
    * @param players
-   * @returns {*}
+   * @returns {players}
    */
   deal: function(deck, dealInt, players){
     var c = 0,
@@ -71,5 +82,28 @@ return players;
       c++;
     }
     return players;
+  },
+  /**
+   *
+   * @param deck {object}
+   * @param cutpoint {int}
+   * @returns {*}
+   */
+  cut: function(deck, cutpoint){
+    var cutDeck = deck.slice(cutpoint);
+    cutDeck = cutDeck.concat(deck.slice(0, cutpoint));
+    return cutDeck;
+  },
+  takeTurn: function(player, cardplayed){
+    if(this.playerTurn !== player.id){
+      return;
+    }
+    this.currentCards.push(cardPlayed);
+    if(this.currentCards.length > 3){
+      //score cards and add to the proper teams array of card tricks
+    }
+  },
+  scoreRound: function(){
+
   }
 };
