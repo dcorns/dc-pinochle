@@ -102,8 +102,5 @@ return players;
     if(this.currentCards.length > 3){
       //score cards and add to the proper teams array of card tricks
     }
-  },
-  scoreRound: function(){
-
   }
 };
