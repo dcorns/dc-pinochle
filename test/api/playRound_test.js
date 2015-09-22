@@ -155,5 +155,122 @@ describe('Cut the Cards', function(){
 });
 
 describe('Player Turns', function(){
-
+  var nuts;
+  before(function(){
+    nuts = require('../../api/js/nuts');
+  });
+  it('validates the card', function(){
+    var valid = nuts.validateCard([3, 5, 24, 16], 4);
+    expect(valid).false;
+    valid = nuts.validateCard([3, 5, 24, 16], 5);
+    expect(valid).true;
+  });
+  it('gets a card\'s rank', function(){
+    var c = 0, numberofCards = 80, numberOfCardRanks = 5, rank;
+    for(c; c < numberofCards - numberOfCardRanks; c+=numberOfCardRanks){
+      rank = nuts.getCardRank(1 + c);
+      expect(rank).to.be.eq(1);
+      rank = nuts.getCardRank(2 + c);
+      expect(rank).to.be.eq(2);
+      rank = nuts.getCardRank(3 + c);
+      expect(rank).to.be.eq(3);
+      rank = nuts.getCardRank(4 + c);
+      expect(rank).to.be.eq(4);
+      rank = nuts.getCardRank(5 + c);
+      expect(rank).to.be.eq(5);
+    }
+  });
+  it('validates the player', function(){
+    var player1 = {dealPos: 4}, player2 = {dealPos: 1}, player3 = {dealPos: 2}, player4 = {dealPos: 3};
+    var valid = nuts.validatePlayer(player1);
+    expect(valid).false;
+    var valid = nuts.validatePlayer(player2);
+    expect(valid).true;
+    var valid = nuts.validatePlayer(player3);
+    expect(valid).false;
+    var valid = nuts.validatePlayer(player4);
+    expect(valid).false;
+    nuts.currentCards.push({});
+    var valid = nuts.validatePlayer(player1);
+    expect(valid).false;
+    var valid = nuts.validatePlayer(player2);
+    expect(valid).false;
+    var valid = nuts.validatePlayer(player3);
+    expect(valid).true;
+    var valid = nuts.validatePlayer(player4);
+    expect(valid).false;
+    nuts.currentCards.push({});
+    var valid = nuts.validatePlayer(player1);
+    expect(valid).false;
+    var valid = nuts.validatePlayer(player2);
+    expect(valid).false;
+    var valid = nuts.validatePlayer(player3);
+    expect(valid).false;
+    var valid = nuts.validatePlayer(player4);
+    expect(valid).true;
+    nuts.currentCards.push({});
+    var valid = nuts.validatePlayer(player1);
+    expect(valid).true;
+    var valid = nuts.validatePlayer(player2);
+    expect(valid).false;
+    var valid = nuts.validatePlayer(player3);
+    expect(valid).false;
+    var valid = nuts.validatePlayer(player4);
+    expect(valid).false;
+  });
+  it('gets the card suite', function(){
+    var c = 1, suite;
+    for(c; c < 21; c++){
+      suite = nuts.getCardSuite(c);
+      expect(suite).to.be.eq(1);
+    }
+    for(c; c < 41; c++){
+      suite = nuts.getCardSuite(c);
+      expect(suite).to.be.eq(2);
+    }
+    for(c; c < 61; c++){
+      suite = nuts.getCardSuite(c);
+      expect(suite).to.be.eq(3);
+    }
+    for(c; c < 81; c++){
+      suite = nuts.getCardSuite(c);
+      expect(suite).to.be.eq(4);
+    }
+  });
+  it('ranks a card against previous cards played in the round', function(){
+    var cardPlayed = {rank: 1}, cardsLaid = [{},{},{}], win, c = 1, len = 6;
+    for(c; c < len; c++){
+      cardsLaid[0].rank = c; cardsLaid[1].rank = c; cardsLaid[2].rank = c;
+      win = nuts.rankPlay(cardPlayed, cardsLaid);
+      expect(win).false;
+    }
+    c = 0; cardPlayed.rank = 2;
+    for(c; c < len; c++){
+      cardsLaid[0].rank = c; cardsLaid[1].rank = c; cardsLaid[2].rank = c;
+      win = nuts.rankPlay(cardPlayed, cardsLaid);
+      if(cardsLaid[0].rank < 2) expect(win).true;
+      else expect(win).false;
+    }
+    c = 0; cardPlayed.rank = 3;
+    for(c; c < len; c++){
+      cardsLaid[0].rank = c; cardsLaid[1].rank = c; cardsLaid[2].rank = c;
+      win = nuts.rankPlay(cardPlayed, cardsLaid);
+      if(cardsLaid[0].rank < 3) expect(win).true;
+      else expect(win).false;
+    }
+    c = 0; cardPlayed.rank = 4;
+    for(c; c < len; c++){
+      cardsLaid[0].rank = c; cardsLaid[1].rank = c; cardsLaid[2].rank = c;
+      win = nuts.rankPlay(cardPlayed, cardsLaid);
+      if(cardsLaid[0].rank < 4) expect(win).true;
+      else expect(win).false;
+    }
+    c = 0; cardPlayed.rank = 5;
+    for(c; c < len; c++){
+      cardsLaid[0].rank = c; cardsLaid[1].rank = c; cardsLaid[2].rank = c;
+      win = nuts.rankPlay(cardPlayed, cardsLaid);
+      if(cardsLaid[0].rank < 5) expect(win).true;
+      else expect(win).false;
+    }
+  });
 });

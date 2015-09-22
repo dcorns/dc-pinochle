@@ -11,16 +11,17 @@
  */
 module.exports = {
   teamOneTricks: {
-    cards: [],
+    tricks: {cards: [], renig: [], playerId: []},
     points: 0
   },
   teamTwoTricks: {
-    cards: [],
+    tricks: {cards: [], renig: [], playerId: []},
     points: 0
   },
   currentCards: [],
-  playerTurn: 0,
-  trump: '',
+  currentWinner: {},
+  trump: 0,
+  trumpPlayed: [],
   /**
    *
    * @param players
@@ -94,13 +95,107 @@ return players;
     cutDeck = cutDeck.concat(deck.slice(0, cutpoint));
     return cutDeck;
   },
+  /**
+   *
+   * @param player
+   * @param cardplayed
+   */
   takeTurn: function(player, cardplayed){
-    if(this.playerTurn !== player.id){
-      return;
+    //Is it the player's turn and is the card in the player's hand
+    if(!this.validatePlayer(player) && !this.validateCard(player.hand, cardplayed)) return;
+    var c = 0, len = player.hand.length, rank = 0, renig = false;
+    //create a card object
+    var card = {cardId: cardplayed, playedBy: player.id};
+    card.team = 4 % player.id ? 2 : 1;
+    card.rank = this.getCardRank(cardplayed);
+    card.suite = this.getCardSuite(cardplayed);
+    //this is the first card played
+    if(!(this.currentWinner.cardId)){
+      this.currentWinner = card;
     }
-    this.currentCards.push(cardPlayed);
-    if(this.currentCards.length > 3){
-      //score cards and add to the proper teams array of card tricks
+    else{
+      //Other cards have been played
+     if(card.suite === this.currentWinner.suite){
+       if(card.rank > this.currentWinner.rank){
+         this.currentWinner = card;
+       }
+       else{
+         //check for renig
+         for(c; c < len; c++){
+           rank = this.getCardRank(c);
+           if(rank > this.currentWinner){
+             renig = true;
+           }
+         }
+       }
+     }
     }
+    if(renig){
+
+    }
+    this.currentCards.push(card);
+    player.hand.slice(player.hand.indexOf(cardplayed));
+    if(card.suite === this.trump){
+      this.trumpPlayed.push(card);
+    }
+  },
+  /**
+   *
+   * @param hand {array} integers
+   * @param cardPlayed {int}
+   * @returns {boolean} if false the card was already played or not a card the player was dealt
+   */
+  validateCard: function(hand, cardPlayed){
+    return hand.indexOf(cardPlayed) > 0;
+  },
+  /**
+   * Higher rank number takes lower rank number
+   * @param card {int}
+   * @returns {int}
+   */
+  getCardRank: function(card){
+    var c = 0, numberOfCardRanks = 5, numberofCards = 80;
+    for(c; c < numberofCards - numberOfCardRanks; c+=numberOfCardRanks){
+      if(card === 1 + c) return 1;
+      if(card === 2 + c) return 2;
+      if(card === 3 + c) return 3;
+      if(card === 4 + c) return 4;
+      if(card === 5 + c) return 5;
+    }
+  },
+  /**
+   * Verifies that it is the players turn to play
+   * @param player
+   * @returns {boolean}
+   */
+  validatePlayer: function(player){
+    console.log(player.dealPos, this.currentCards.length + 1);
+    return player.dealPos === this.currentCards.length + 1;
+  },
+  /**
+   * Suite changes every 20 cards, using that to determine suite
+   * @param cardPlayed
+   * @returns {number}
+   */
+  getCardSuite: function(cardPlayed){
+    if(cardPlayed < 21 && cardPlayed > 0) return 1;
+    if(cardPlayed < 41 && cardPlayed > 20) return 2;
+    if(cardPlayed < 61 && cardPlayed > 40) return 3;
+    if(cardPlayed < 81 && cardPlayed > 60) return 4;
+    return 0;
+  },
+  /**
+   * Checks if cardPlayed rank is superior to all the card ranks in cardsLaid
+   * @param cardPlayed
+   * @param cardsLaid
+   * @returns {boolean}
+   */
+  rankPlay: function(cardPlayed, cardsLaid){
+    var isWinner = false, c = 0, len = cardsLaid.length;
+    for(c; c < len; c++){
+      isWinner = cardPlayed.rank > cardsLaid[0].rank;
+    }
+    return isWinner;
   }
+
 };
