@@ -40,6 +40,29 @@ var nuts = require('./nuts'),
       dealPos: 3,
       meld: {}
     }
+  },
+  DeckKey = {
+    spades:{
+      lowRange: 1,
+      highRange: 20
+    },
+    clubs:{
+      lowRange: 21,
+      highRange: 40
+    },
+    diamonds:{
+      lowRange: 41,
+      highRange: 60
+    },
+    hearts:{
+      lowRange: 61,
+      highRange: 80
+    },
+    jackStart: 1,
+    queenStart: 2,
+    kingStart: 3,
+    tenStart: 4,
+    aceStart: 5
   };
 /**
  *
