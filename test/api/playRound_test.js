@@ -273,4 +273,100 @@ describe('Player Turns', function(){
       else expect(win).false;
     }
   });
+  it('creates a played card object', function(){
+    var player = {id: 1}, cardplayed = 4;
+    var card = nuts.makeCardDetails(player, cardplayed);
+    expect(card.cardId).to.be.eq(4);
+    expect(card.playedBy).to.be.eq(player.id);
+    expect(card.suite).to.be.eq(1);
+    expect(card.rank).to.be.eq(4);
+  });
+  it('records player renig for not beating the high card', function(){
+    var player = {id: 1, hand:[2,4,6,5,9,12,44,24,13,76,50,23,7,80,33,22,11,37,19,8], dealPos: 4};
+    nuts.currentCards = [{cardId: 1, playedBy: 2, team: 2, suite: 1, rank: 1}, {cardId: 2, playedBy: 3, team: 1, suite: 1, rank: 2}, {cardId: 3, playedBy: 4, team: 2, suite: 1, rank: 3}];
+    nuts.currentWinner = {cardId: 3, playedBy: 4, team: 2, suite: 1, rank: 3};
+    nuts.takeTurn(player, 2);
+    expect(nuts.renigs.length).to.be.eq(1);
+  });
+  it('records player renig for playing trump while having lead suite in hand', function(){
+    var player = {id: 1, hand:[2,4,6,5,9,12,44,24,13,76,50,23,7,80,33,22,11,37,19,8], dealPos: 4};
+    nuts.currentCards = [{cardId: 1, playedBy: 2, team: 2, suite: 1, rank: 1}, {cardId: 2, playedBy: 3, team: 1, suite: 1, rank: 2}, {cardId: 3, playedBy: 4, team: 2, suite: 1, rank: 3}];
+    nuts.currentWinner = {cardId: 3, playedBy: 4, team: 2, suite: 1, rank: 3};
+    nuts.trump = 4;
+    nuts.renigs = [];
+    nuts.takeTurn(player, 80);
+    expect(nuts.renigs.length).to.be.eq(1);
+  });
+  it('records player renig for playing another suite besides the lead when has trump', function(){
+    var player = {id: 1, hand:[2,4,6,5,9,12,44,24,13,76,50,23,7,80,33,22,11,37,19,8], dealPos: 4};
+    nuts.currentCards = [{cardId: 1, playedBy: 2, team: 2, suite: 1, rank: 1}, {cardId: 2, playedBy: 3, team: 1, suite: 1, rank: 2}, {cardId: 3, playedBy: 4, team: 2, suite: 1, rank: 3}];
+    nuts.currentWinner = {cardId: 3, playedBy: 4, team: 2, suite: 1, rank: 3};
+    nuts.trump = 4;
+    nuts.renigs = [];
+    nuts.takeTurn(player, 24);
+    expect(nuts.renigs.length).to.be.eq(1);
+  });
+  it('records a renig for over trumping while having the lead suite', function(){
+    var player = {id: 1, hand:[2,4,6,5,9,12,44,24,13,76,50,23,7,80,33,22,11,37,19,8], dealPos: 4};
+    nuts.currentCards = [{cardId: 1, playedBy: 2, team: 2, suite: 1, rank: 1}, {cardId: 2, playedBy: 3, team: 1, suite: 1, rank: 2}, {cardId: 3, playedBy: 4, team: 2, suite: 1, rank: 3}];
+    nuts.currentWinner = {cardId: 3, playedBy: 4, team: 2, suite: 4, rank: 3};
+    nuts.trump = 4;
+    nuts.renigs = [];
+    nuts.takeTurn(player, 80);
+    expect(nuts.renigs.length).to.be.eq(1);
+  });
+  it('does not record renig when card played is in correct suite', function(){
+    var player = {id: 1, hand:[2,4,6,5,9,12,44,24,13,76,50,23,7,80,33,22,11,37,19,8], dealPos: 4};
+    nuts.currentCards = [{cardId: 1, playedBy: 2, team: 2, suite: 1, rank: 1}, {cardId: 2, playedBy: 3, team: 1, suite: 1, rank: 2}, {cardId: 3, playedBy: 4, team: 2, suite: 1, rank: 3}];
+    nuts.currentWinner = {cardId: 3, playedBy: 4, team: 2, suite: 1, rank: 3};
+    nuts.trump = 4;
+    nuts.renigs = [];
+    nuts.takeTurn(player, 5);
+    expect(nuts.renigs.length).to.be.eq(0);
+    player = {id: 1, hand:[2,3,6,5,32,12,44,24,13,76,50,23,7,80,33,22,11,37,19,8], dealPos: 4};
+    nuts.takeTurn(player, 12);
+    expect(nuts.renigs.length).to.be.eq(0);
+  });
+  it('does not record renig when trump in played is in correctly', function(){
+    var player = {id: 1, hand:[2,4,6,5,9,12,44,24,13,76,50,23,7,80,33,22,11,37,19,8], dealPos: 4};
+    nuts.currentCards = [{cardId: 1, playedBy: 2, suite: 1, rank: 1}, {cardId: 2, playedBy: 3, suite: 1, rank: 2}, {cardId: 3, playedBy: 4, suite: 1, rank: 3}];
+    nuts.currentWinner = {cardId: 3, playedBy: 4, suite: 4, rank: 3};
+    nuts.trump = 4;
+    nuts.renigs = [];
+    nuts.takeTurn(player, 5);
+    expect(nuts.renigs.length).to.be.eq(0);
+    player = {id: 1, hand:[42,43,46,45,32,52,44,24,53,76,50,63,67,80,33,22,61,37,59,68], dealPos: 4};
+    nuts.currentWinner = {cardId: 3, playedBy: 4, suite: 1, rank: 3};
+    nuts.currentCards = [{cardId: 1, playedBy: 2, suite: 1, rank: 1}];
+    nuts.takeTurn(player, 80);
+    expect(nuts.renigs.length).to.be.eq(0);
+  });
+  it('adds played card to current cards', function(){
+    var player = {id: 1, hand:[2,4,6,5,9,12,44,24,13,76,50,23,7,80,33,22,11,37,19,8], dealPos: 4};
+    nuts.currentCards = [];
+    nuts.currentWinner = {};
+    nuts.takeTurn(player, 5);
+    expect(nuts.currentCards.length).to.be.eq(1);
+  });
+  it('removes played card from player hand', function(){
+    var player = {id: 1, hand:[2,4,6,5,9,12,44,24,13,76,50,23,7,80,33,22,11,37,19,8], dealPos: 4};
+    nuts.currentCards = [];
+    nuts.currentWinner = {};
+    nuts.takeTurn(player, 44);
+    expect(player.hand.indexOf(44)).to.be.eq(-1);
+    expect(player.hand.length).to.be.eq(19);
+  });
+  it('scores the round', function(){
+    nuts.currentCards = [{cardId: 1, playedBy: 2, suite: 1, rank: 1}, {cardId: 2, playedBy: 3, suite: 1, rank: 2}, {cardId: 3, playedBy: 4, suite: 1, rank: 3}, {cardId: 3, playedBy: 4, suite: 4, rank: 3}];
+    nuts.currentWinner = {cardId: 3, playedBy: 4, suite: 4, rank: 3};
+    nuts.teamTwoTricks.points = 0;
+    nuts.teamTwoTricks.tricks = [];
+    nuts.scoreRound();
+    expect(nuts.teamTwoTricks.points).to.be.eq(2);
+    expect(nuts.teamTwoTricks.tricks.length).to.be.eq(1);
+    expect(nuts.teamTwoTricks.tricks[0].length).to.be.eq(4);
+  });
+  it('resets the currentCards array after scoring', function(){
+    expect(nuts.currentCards.length).to.be.eq(0);
+  });
 });

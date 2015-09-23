@@ -11,17 +11,19 @@
  */
 module.exports = {
   teamOneTricks: {
-    tricks: {cards: [], renig: [], playerId: []},
+    tricks: [],
     points: 0
   },
   teamTwoTricks: {
-    tricks: {cards: [], renig: [], playerId: []},
+    tricks: [],
     points: 0
   },
   currentCards: [],
   currentWinner: {},
   trump: 0,
   trumpPlayed: [],
+  round: 0,
+  renigs: [],
   /**
    *
    * @param players
@@ -103,12 +105,10 @@ return players;
   takeTurn: function(player, cardplayed){
     //Is it the player's turn and is the card in the player's hand
     if(!this.validatePlayer(player) && !this.validateCard(player.hand, cardplayed)) return;
-    var c = 0, len = player.hand.length, rank = 0, renig = false;
+    var c = 0, len = player.hand.length, rank = 0, renig = false, suite = 0;
+    this.round++;
     //create a card object
-    var card = {cardId: cardplayed, playedBy: player.id};
-    card.team = 4 % player.id ? 2 : 1;
-    card.rank = this.getCardRank(cardplayed);
-    card.suite = this.getCardSuite(cardplayed);
+    var card = this.makeCardDetails(player, cardplayed);
     //this is the first card played
     if(!(this.currentWinner.cardId)){
       this.currentWinner = card;
@@ -122,8 +122,34 @@ return players;
        else{
          //check for renig
          for(c; c < len; c++){
-           rank = this.getCardRank(c);
-           if(rank > this.currentWinner){
+           rank = this.getCardRank(player.hand[c]);
+           if(rank > this.currentWinner.rank){
+             renig = true;
+           }
+         }
+       }
+     }
+     //Card played did not match the winner suite
+      else{
+       //Check if trump played, if played check for currentCards[0].suite(lead card for round) in hand for renig and make winner
+       if(card.suite === this.trump){
+         this.currentWinner = card;
+         //check for renig
+         c = 0;
+         for(c; c < len; c++){
+           suite = this.getCardSuite(player.hand[c]);
+           console.log('141-'+ suite);
+           if(suite === this.currentCards[0].suite){
+             renig = true;
+           }
+         }
+       }
+       else{
+         //trump not played and winning suite not played
+         c = 0;
+         for(c; c < len; c++){
+           suite = this.getCardSuite(player.hand[c]);
+           if((suite === this.trump || suite === this.currentCards[0].suite) && card.suite !== this.currentCards[0].suite){
              renig = true;
            }
          }
@@ -131,13 +157,15 @@ return players;
      }
     }
     if(renig){
-
+      this.renigs.push({id: player.id, round: this.round, playedCard: cardplayed, laidCards: this.currentCards});
     }
     this.currentCards.push(card);
-    player.hand.slice(player.hand.indexOf(cardplayed));
-    if(card.suite === this.trump){
-      this.trumpPlayed.push(card);
+    var idx = player.hand.indexOf(cardplayed);
+    player.hand.splice(idx, 1);
+    if(this.currentCards.length === 4){
+      this.scoreRound();
     }
+
   },
   /**
    *
@@ -169,7 +197,6 @@ return players;
    * @returns {boolean}
    */
   validatePlayer: function(player){
-    console.log(player.dealPos, this.currentCards.length + 1);
     return player.dealPos === this.currentCards.length + 1;
   },
   /**
@@ -196,6 +223,31 @@ return players;
       isWinner = cardPlayed.rank > cardsLaid[0].rank;
     }
     return isWinner;
+  },
+  /**
+   * Create a played card object
+   * @param player
+   * @param cardPlayed
+   * @returns {{cardId: *, playedBy: number}}
+   */
+  makeCardDetails: function(player, cardPlayed){
+    var card = {cardId: cardPlayed, playedBy: player.id};
+    card.rank = this.getCardRank(cardPlayed);
+    card.suite = this.getCardSuite(cardPlayed);
+    return card;
+  },
+  /**
+   * Scores a round of the hand
+   */
+  scoreRound: function(){
+    var c = 0, score = 0, cards = this.currentCards;
+    for (c; c < 4; c++){
+      if(cards[c].rank > 2) score++;
+    }
+    var winner = (this.currentWinner.playedBy === 2 || this.currentWinner.playedBy === 4) ? this.teamTwoTricks : this.teamOneTricks;
+    winner.points += score;
+    winner.tricks.push(this.currentCards);
+    this.currentCards = [];
   }
 
 };
