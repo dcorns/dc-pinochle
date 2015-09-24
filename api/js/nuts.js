@@ -117,47 +117,6 @@ return players;
     }
     else{
      renig = this.validatePlay(card, player.hand);
-     // //Other cards have been played
-     //if(card.suite === this.currentWinner.suite){
-     //  if(card.rank > this.currentWinner.rank){
-     //    this.currentWinner = card;
-     //  }
-     //  else{
-     //    //check for renig
-     //    for(c; c < len; c++){
-     //      rank = this.getCardRank(player.hand[c]);
-     //      if(rank > this.currentWinner.rank){
-     //        renig = true;
-     //      }
-     //    }
-     //  }
-     //}
-     ////Card played did not match the winner suite
-     // else{
-     //  //Check if trump played, if played check for currentCards[0].suite(lead card for round) in hand for renig and make winner
-     //  if(card.suite === this.trump){
-     //    this.currentWinner = card;
-     //    //check for renig
-     //    c = 0;
-     //    for(c; c < len; c++){
-     //      suite = this.getCardSuite(player.hand[c]);
-     //      console.log('141-'+ suite);
-     //      if(suite === this.currentCards[0].suite){
-     //        renig = true;
-     //      }
-     //    }
-     //  }
-     //  else{
-     //    //trump not played and winning suite not played
-     //    c = 0;
-     //    for(c; c < len; c++){
-     //      suite = this.getCardSuite(player.hand[c]);
-     //      if((suite === this.trump || suite === this.currentCards[0].suite) && card.suite !== this.currentCards[0].suite){
-     //        renig = true;
-     //      }
-     //    }
-     //  }
-     //}
     }
     if(renig){
       this.renigs.push({id: player.id, round: this.round, playedCard: cardplayed, laidCards: this.currentCards});
