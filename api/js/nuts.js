@@ -2,14 +2,15 @@
  * nuts.js
  * Created by dcorns on 9/11/15
  * @author Copyright © 2015 Dale Corns
- * @fileOverview a pinochle game: Shuffles and deals the card from the current dealer perspective using the specified card amount of cards to each player until all 80 are dealt
+ * @fileOverview a pinochle game: Handle the card playing logic.
  */
 'use strict';
 /**
  *
- * @type {{startRound: Function, shuffle: Function, deal: Function}}
+ * @type {{teamOneTricks: {tricks: Array, points: number}, teamTwoTricks: {tricks: Array, points: number}, currentCards: Array, currentWinner: {}, trump: number, trumpPlayed: Array, round: number, renigs: Array, startRound: Function, shuffle: Function, deal: Function, cut: Function, takeTurn: Function, validateCard: Function, getCardRank: Function, validatePlayer: Function, getCardSuite: Function, rankPlay: Function, makeCardDetails: Function, scoreRound: Function, validatePlay: Function}}
+ *@module nuts
  */
-var nuts = {
+module.exports = {
   teamOneTricks: {
     tricks: [],
     points: 0
@@ -29,6 +30,7 @@ var nuts = {
    * @param players {object}
    * @param dealInteger {int}
    * @returns {players}
+   *
    */
   startRound: function(players, dealInteger){
     if(!(players)) throw new Error('a player object is required', 'nuts.js', 10);
@@ -301,4 +303,3 @@ return players;
     return renig;
   }
 };
-module.exports = nuts;
