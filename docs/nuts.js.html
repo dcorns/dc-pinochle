@@ -38,11 +38,25 @@
  * @type {{startRound: Function, shuffle: Function, deal: Function}}
  */
 module.exports = {
+  teamOneTricks: {
+    tricks: [],
+    points: 0
+  },
+  teamTwoTricks: {
+    tricks: [],
+    points: 0
+  },
+  currentCards: [],
+  currentWinner: {},
+  trump: 0,
+  trumpPlayed: [],
+  round: 0,
+  renigs: [],
   /**
    *
-   * @param players
-   * @param dealInteger
-   * @returns {*}
+   * @param players {object}
+   * @param dealInteger {int}
+   * @returns {players}
    */
   startRound: function(players, dealInteger){
     if(!(players)) throw new Error('a player object is required', 'nuts.js', 10);
@@ -102,11 +116,217 @@ return players;
   },
   /**
    *
-   * @param deck
-   * @returns {*}
+   * @param deck {array}
+   * @param cutpoint {int}
+   * @returns {array}
    */
-  cut: function(deck){
-    return deck;
+  cut: function(deck, cutpoint){
+    var cutDeck = deck.slice(cutpoint);
+    cutDeck = cutDeck.concat(deck.slice(0, cutpoint));
+    return cutDeck;
+  },
+  /**
+   *
+   * @param player {object}
+   * @param cardplayed {int}
+   */
+  takeTurn: function(player, cardplayed){
+    //Is it the player's turn and is the card in the player's hand
+    if(!this.validatePlayer(player) &amp;&amp; !this.validateCard(player.hand, cardplayed)) return;
+    var c = 0, len = player.hand.length, rank = 0, renig = false, suite = 0;
+    this.round++;
+    //create a card object
+    var card = this.makeCardDetails(player, cardplayed);
+    //this is the first card played
+    if(!(this.currentWinner.cardId)){
+      this.currentWinner = card;
+    }
+    else{
+     renig = this.validatePlay(card, player.hand);
+     // //Other cards have been played
+     //if(card.suite === this.currentWinner.suite){
+     //  if(card.rank > this.currentWinner.rank){
+     //    this.currentWinner = card;
+     //  }
+     //  else{
+     //    //check for renig
+     //    for(c; c &lt; len; c++){
+     //      rank = this.getCardRank(player.hand[c]);
+     //      if(rank > this.currentWinner.rank){
+     //        renig = true;
+     //      }
+     //    }
+     //  }
+     //}
+     ////Card played did not match the winner suite
+     // else{
+     //  //Check if trump played, if played check for currentCards[0].suite(lead card for round) in hand for renig and make winner
+     //  if(card.suite === this.trump){
+     //    this.currentWinner = card;
+     //    //check for renig
+     //    c = 0;
+     //    for(c; c &lt; len; c++){
+     //      suite = this.getCardSuite(player.hand[c]);
+     //      console.log('141-'+ suite);
+     //      if(suite === this.currentCards[0].suite){
+     //        renig = true;
+     //      }
+     //    }
+     //  }
+     //  else{
+     //    //trump not played and winning suite not played
+     //    c = 0;
+     //    for(c; c &lt; len; c++){
+     //      suite = this.getCardSuite(player.hand[c]);
+     //      if((suite === this.trump || suite === this.currentCards[0].suite) &amp;&amp; card.suite !== this.currentCards[0].suite){
+     //        renig = true;
+     //      }
+     //    }
+     //  }
+     //}
+    }
+    if(renig){
+      this.renigs.push({id: player.id, round: this.round, playedCard: cardplayed, laidCards: this.currentCards});
+    }
+    this.currentCards.push(card);
+    var idx = player.hand.indexOf(cardplayed);
+    player.hand.splice(idx, 1);
+    if(this.currentCards.length === 4){
+      this.scoreRound();
+    }
+
+  },
+  /**
+   *
+   * @param hand {array} integers
+   * @param cardPlayed {int}
+   * @returns {boolean} if false the card was already played or not a card the player was dealt
+   */
+  validateCard: function(hand, cardPlayed){
+    return hand.indexOf(cardPlayed) > 0;
+  },
+  /**
+   * Higher rank number takes lower rank number
+   * @param card {int}
+   * @returns {int}
+   */
+  getCardRank: function(card){
+    var c = 0, numberOfCardRanks = 5, numberofCards = 80;
+    for(c; c &lt; numberofCards - numberOfCardRanks; c+=numberOfCardRanks){
+      if(card === 1 + c) return 1;
+      if(card === 2 + c) return 2;
+      if(card === 3 + c) return 3;
+      if(card === 4 + c) return 4;
+      if(card === 5 + c) return 5;
+    }
+  },
+  /**
+   * Verifies that it is the players turn to play
+   * @param player {object}
+   * @returns {boolean}
+   */
+  validatePlayer: function(player){
+    return player.dealPos === this.currentCards.length + 1;
+  },
+  /**
+   * Suite changes every 20 cards, using that to determine suite
+   * @param cardPlayed {int}
+   * @returns {int}
+   */
+  getCardSuite: function(cardPlayed){
+    if(cardPlayed &lt; 21 &amp;&amp; cardPlayed > 0) return 1;
+    if(cardPlayed &lt; 41 &amp;&amp; cardPlayed > 20) return 2;
+    if(cardPlayed &lt; 61 &amp;&amp; cardPlayed > 40) return 3;
+    if(cardPlayed &lt; 81 &amp;&amp; cardPlayed > 60) return 4;
+    return 0;
+  },
+  /**
+   * Checks if cardPlayed rank is superior to all the card ranks in cardsLaid
+   * @param cardPlayed
+   * @param cardsLaid
+   * @returns {boolean}
+   */
+  rankPlay: function(cardPlayed, cardsLaid){
+    var isWinner = false, c = 0, len = cardsLaid.length;
+    for(c; c &lt; len; c++){
+      isWinner = cardPlayed.rank > cardsLaid[0].rank;
+    }
+    return isWinner;
+  },
+  /**
+   * Create a played card object
+   * @param player
+   * @param cardPlayed
+   * @returns {{cardId: *, playedBy: number}}
+   */
+  makeCardDetails: function(player, cardPlayed){
+    var card = {cardId: cardPlayed, playedBy: player.id};
+    card.rank = this.getCardRank(cardPlayed);
+    card.suite = this.getCardSuite(cardPlayed);
+    return card;
+  },
+  /**
+   * Scores a round of the hand
+   */
+  scoreRound: function(){
+    var c = 0, score = 0, cards = this.currentCards;
+    for (c; c &lt; 4; c++){
+      if(cards[c].rank > 2) score++;
+    }
+    var winner = (this.currentWinner.playedBy === 2 || this.currentWinner.playedBy === 4) ? this.teamTwoTricks : this.teamOneTricks;
+    winner.points += score;
+    winner.tricks.push(this.currentCards);
+    this.currentCards = [];
+  },
+  /**
+   * Returns true if play is a renig
+   * @param card {object}
+   * @param hand {array}
+   * @returns {boolean}
+   */
+  validatePlay: function(card, hand) {
+    var rank = 0, suite = 0, renig = false, len = hand.length, c = 0;
+    if (card.suite === this.currentWinner.suite) {
+      if (card.rank > this.currentWinner.rank) {
+        this.currentWinner = card;
+      }
+      else {
+        //check for renig
+        for (c; c &lt; len; c++) {
+          rank = this.getCardRank(hand[c]);
+          if (rank > this.currentWinner.rank) {
+            renig = true;
+          }
+        }
+      }
+    }
+    //Card played did not match the winner suite
+    else {
+      //Check if trump played, if played check for currentCards[0].suite(lead card for round) in hand for renig and make winner
+      if (card.suite === this.trump) {
+        this.currentWinner = card;
+        //check for renig
+        c = 0;
+        for (c; c &lt; len; c++) {
+          suite = this.getCardSuite(hand[c]);
+          console.log('141-' + suite);
+          if (suite === this.currentCards[0].suite) {
+            renig = true;
+          }
+        }
+      }
+      else {
+        //trump not played and winning suite not played
+        c = 0;
+        for (c; c &lt; len; c++) {
+          suite = this.getCardSuite(hand[c]);
+          if ((suite === this.trump || suite === this.currentCards[0].suite) &amp;&amp; card.suite !== this.currentCards[0].suite) {
+            renig = true;
+          }
+        }
+      }
+    }
+    return renig;
   }
 };</code></pre>
         </article>
@@ -124,7 +344,7 @@ return players;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Mon Sep 21 2015 13:40:47 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Wed Sep 23 2015 16:45:21 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

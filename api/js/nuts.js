@@ -9,7 +9,7 @@
  *
  * @type {{startRound: Function, shuffle: Function, deal: Function}}
  */
-module.exports = {
+var nuts = {
   teamOneTricks: {
     tricks: [],
     points: 0
@@ -26,9 +26,9 @@ module.exports = {
   renigs: [],
   /**
    *
-   * @param players
-   * @param dealInteger
-   * @returns {*}
+   * @param players {object}
+   * @param dealInteger {int}
+   * @returns {players}
    */
   startRound: function(players, dealInteger){
     if(!(players)) throw new Error('a player object is required', 'nuts.js', 10);
@@ -88,9 +88,9 @@ return players;
   },
   /**
    *
-   * @param deck {object}
+   * @param deck {array}
    * @param cutpoint {int}
-   * @returns {*}
+   * @returns {array}
    */
   cut: function(deck, cutpoint){
     var cutDeck = deck.slice(cutpoint);
@@ -99,8 +99,8 @@ return players;
   },
   /**
    *
-   * @param player
-   * @param cardplayed
+   * @param player {object}
+   * @param cardplayed {int}
    */
   takeTurn: function(player, cardplayed){
     //Is it the player's turn and is the card in the player's hand
@@ -114,47 +114,48 @@ return players;
       this.currentWinner = card;
     }
     else{
-      //Other cards have been played
-     if(card.suite === this.currentWinner.suite){
-       if(card.rank > this.currentWinner.rank){
-         this.currentWinner = card;
-       }
-       else{
-         //check for renig
-         for(c; c < len; c++){
-           rank = this.getCardRank(player.hand[c]);
-           if(rank > this.currentWinner.rank){
-             renig = true;
-           }
-         }
-       }
-     }
-     //Card played did not match the winner suite
-      else{
-       //Check if trump played, if played check for currentCards[0].suite(lead card for round) in hand for renig and make winner
-       if(card.suite === this.trump){
-         this.currentWinner = card;
-         //check for renig
-         c = 0;
-         for(c; c < len; c++){
-           suite = this.getCardSuite(player.hand[c]);
-           console.log('141-'+ suite);
-           if(suite === this.currentCards[0].suite){
-             renig = true;
-           }
-         }
-       }
-       else{
-         //trump not played and winning suite not played
-         c = 0;
-         for(c; c < len; c++){
-           suite = this.getCardSuite(player.hand[c]);
-           if((suite === this.trump || suite === this.currentCards[0].suite) && card.suite !== this.currentCards[0].suite){
-             renig = true;
-           }
-         }
-       }
-     }
+     renig = this.validatePlay(card, player.hand);
+     // //Other cards have been played
+     //if(card.suite === this.currentWinner.suite){
+     //  if(card.rank > this.currentWinner.rank){
+     //    this.currentWinner = card;
+     //  }
+     //  else{
+     //    //check for renig
+     //    for(c; c < len; c++){
+     //      rank = this.getCardRank(player.hand[c]);
+     //      if(rank > this.currentWinner.rank){
+     //        renig = true;
+     //      }
+     //    }
+     //  }
+     //}
+     ////Card played did not match the winner suite
+     // else{
+     //  //Check if trump played, if played check for currentCards[0].suite(lead card for round) in hand for renig and make winner
+     //  if(card.suite === this.trump){
+     //    this.currentWinner = card;
+     //    //check for renig
+     //    c = 0;
+     //    for(c; c < len; c++){
+     //      suite = this.getCardSuite(player.hand[c]);
+     //      console.log('141-'+ suite);
+     //      if(suite === this.currentCards[0].suite){
+     //        renig = true;
+     //      }
+     //    }
+     //  }
+     //  else{
+     //    //trump not played and winning suite not played
+     //    c = 0;
+     //    for(c; c < len; c++){
+     //      suite = this.getCardSuite(player.hand[c]);
+     //      if((suite === this.trump || suite === this.currentCards[0].suite) && card.suite !== this.currentCards[0].suite){
+     //        renig = true;
+     //      }
+     //    }
+     //  }
+     //}
     }
     if(renig){
       this.renigs.push({id: player.id, round: this.round, playedCard: cardplayed, laidCards: this.currentCards});
@@ -193,7 +194,7 @@ return players;
   },
   /**
    * Verifies that it is the players turn to play
-   * @param player
+   * @param player {object}
    * @returns {boolean}
    */
   validatePlayer: function(player){
@@ -201,8 +202,8 @@ return players;
   },
   /**
    * Suite changes every 20 cards, using that to determine suite
-   * @param cardPlayed
-   * @returns {number}
+   * @param cardPlayed {int}
+   * @returns {int}
    */
   getCardSuite: function(cardPlayed){
     if(cardPlayed < 21 && cardPlayed > 0) return 1;
@@ -248,6 +249,56 @@ return players;
     winner.points += score;
     winner.tricks.push(this.currentCards);
     this.currentCards = [];
+  },
+  /**
+   * Returns true if play is a renig
+   * @param card {object}
+   * @param hand {array}
+   * @returns {boolean}
+   */
+  validatePlay: function(card, hand) {
+    var rank = 0, suite = 0, renig = false, len = hand.length, c = 0;
+    if (card.suite === this.currentWinner.suite) {
+      if (card.rank > this.currentWinner.rank) {
+        this.currentWinner = card;
+      }
+      else {
+        //check for renig
+        for (c; c < len; c++) {
+          rank = this.getCardRank(hand[c]);
+          if (rank > this.currentWinner.rank) {
+            renig = true;
+          }
+        }
+      }
+    }
+    //Card played did not match the winner suite
+    else {
+      //Check if trump played, if played check for currentCards[0].suite(lead card for round) in hand for renig and make winner
+      if (card.suite === this.trump) {
+        this.currentWinner = card;
+        //check for renig
+        c = 0;
+        for (c; c < len; c++) {
+          suite = this.getCardSuite(hand[c]);
+          console.log('141-' + suite);
+          if (suite === this.currentCards[0].suite) {
+            renig = true;
+          }
+        }
+      }
+      else {
+        //trump not played and winning suite not played
+        c = 0;
+        for (c; c < len; c++) {
+          suite = this.getCardSuite(hand[c]);
+          if ((suite === this.trump || suite === this.currentCards[0].suite) && card.suite !== this.currentCards[0].suite) {
+            renig = true;
+          }
+        }
+      }
+    }
+    return renig;
   }
-
 };
+module.exports = nuts;
