@@ -54,12 +54,56 @@ var nuts = require('./nuts'),
  * @type {{addPlayerName: Function, startHand: Function}}
  * @module dcPinochle
  */
+function getPlayerFromId(id){
+  switch (id){
+    case 1:
+      return players.player1;
+      break;
+    case 2:
+      return players.player2;
+      break;
+    case 3:
+      return players.player3;
+      break;
+    case 4:
+      return players.player4;
+      break;
+    default:
+      throw error('valid id\'s are 1-4');
+      break;
+  }
+}
 module.exports = {
   /**
-   * Creates player hands, calculates the meld and provides object for running the game
-   * @param cardsPerDeal {int}
+   * Adds an name to the player object
+   * @param id {int} 1-4
+   * @param name {string} player name
    */
-  startHand: function(cardsPerDeal){
+  addPlayerName: function(id, name){
+    switch (id){
+      case 1:
+        players.player1.name = name;
+        break;
+      case 2:
+        players.player2.name = name;
+        break;
+      case 3:
+        players.player3.name = name;
+        break;
+      case 4:
+        players.player4.name = name;
+        break;
+      default:
+        throw error('valid id\'s are 1-4');
+        break;
+    }
+  },
+  /**
+   * Creates player hands, calculates the meld and provides object for running the game
+   * @param cardsPerDeal {int} card dealing segment
+   * @param cutPoint {int} where to cut the cards
+   */
+  startHand: function(cardsPerDeal, cutPoint){
     var play = nuts.startRound(players, cardsPerDeal);
     play.player1.meld = new CardData(play.player1.hand);
     play.player2.meld = new CardData(play.player2.hand);
@@ -69,7 +113,20 @@ module.exports = {
     play.player2.meld.calculateMeld();
     play.player3.meld.calculateMeld();
     play.player4.meld.calculateMeld();
-    return play;
+  },
+  /**
+   * Plays a card
+   * @param playerId
+   * @param card {int}
+   */
+  playCard: function(playerId, card){
+    nuts.takeTurn(getPlayerFromId(playerId), card);
+  },
+  getCurrentCards: function(){
+    return nuts.currentCards;
+  },
+  getPlayerHand: function(playerId){
+    return getPlayerFromId(playerId).hand;
   }
 };
 

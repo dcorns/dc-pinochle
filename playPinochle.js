@@ -6,4 +6,8 @@
 'use strict';
 var dcPinochle = require('./api/js/dcPinochle');
 
-var play = dcPinochle.startHand(5);
+dcPinochle.startHand(5, 34);
+
+dcPinochle.playCard(1, 23);
+console.dir(dcPinochle.getCurrentCards());
+

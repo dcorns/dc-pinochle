@@ -29,10 +29,11 @@ module.exports = {
    *
    * @param players {object}
    * @param dealInteger {int}
+   * @param cutIn {int}
    * @returns {players}
    *
    */
-  startRound: function(players, dealInteger){
+  startRound: function(players, dealInteger, cutIn){
     if(!(players)) throw new Error('a player object is required', 'nuts.js', 10);
     if(!(players.hasOwnProperty('player1'))) throw new Error('player object requires a player1 property');
     if(!(players.hasOwnProperty('player2'))) throw new Error('player object requires a player2 property');
@@ -41,6 +42,7 @@ module.exports = {
     var dealInt = dealInteger || 4;
     if(dealInt > 20 || dealInt < 1) throw new Error('deal integer must be less than 20 and greater than 0', 'nuts.js', 12);
     var deck = this.shuffle();
+    deck = this.cut(deck, cutIn);
     players = this.deal(deck, dealInt, players);
 return players;
   },
@@ -107,7 +109,7 @@ return players;
   takeTurn: function(player, cardplayed){
     //Is it the player's turn and is the card in the player's hand
     if(!this.validatePlayer(player) && !this.validateCard(player.hand, cardplayed)) return;
-    var c = 0, len = player.hand.length, rank = 0, renig = false, suite = 0;
+    var renig = false;
     this.round++;
     //create a card object
     var card = this.makeCardDetails(player, cardplayed);
